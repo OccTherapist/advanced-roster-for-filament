@@ -2,6 +2,12 @@
 
 All notable changes to `advanced-roster-for-filament` will be documented in this file.
 
+## v0.1.1 - 2026-06-22
+
+### Changed
+
+- Added Laravel 13 support (`illuminate/contracts` and `illuminate/support` `^13.0`)
+
 ## v0.1.0 - 2026-06-22
 
 ### Added

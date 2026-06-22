@@ -7,7 +7,7 @@
 
 **A flexible weekly roster page for Filament** — drag-and-drop entries, row reordering, recurring shifts, day notes, and optional PDF export.
 
-Built for **Filament v4 and v5** on **Laravel 11/12**. Assign any Eloquent model as roster rows (default: `User`), scope data to your tenant or team, and extend validation rules when you need them.
+Built for **Filament v4 and v5** on **Laravel 11, 12, and 13**. Assign any Eloquent model as roster rows (default: `User`), scope data to your tenant or team, and extend validation rules when you need them.
 
 ---
 
@@ -72,7 +72,7 @@ Daily, weekly, or custom patterns with weekday selection and repeat-until date.
 
 - PHP 8.2+
 - [Filament](https://filamentphp.com/) 4 or 5
-- Laravel 11 or 12
+- Laravel 11, 12, or 13
 
 **Optional** (PDF export):
 
