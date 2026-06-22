@@ -1,0 +1,73 @@
+{
+    "name": "occtherapist/advanced-roster-for-filament",
+    "description": "A flexible weekly roster page for Filament — drag-and-drop entries, recurrence, day notes, and optional PDF export.",
+    "keywords": [
+        "filament",
+        "filament-plugin",
+        "laravel",
+        "roster",
+        "schedule",
+        "shift-plan",
+        "dienstplan",
+        "calendar"
+    ],
+    "homepage": "https://github.com/OccTherapist/advanced-roster-for-filament",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Igor Clauss",
+            "homepage": "https://igorclauss.de",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/OccTherapist/advanced-roster-for-filament/issues",
+        "source": "https://github.com/OccTherapist/advanced-roster-for-filament",
+        "docs": "https://github.com/OccTherapist/advanced-roster-for-filament#readme"
+    },
+    "require": {
+        "php": "^8.2",
+        "filament/filament": "^4.0|^5.0",
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.22",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "suggest": {
+        "spatie/laravel-pdf": "Required for PDF roster export."
+    },
+    "autoload": {
+        "psr-4": {
+            "OccTherapist\\AdvancedRosterForFilament\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OccTherapist\\AdvancedRosterForFilament\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "OccTherapist\\AdvancedRosterForFilament\\AdvancedRosterForFilamentServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "scripts": {
+        "lint": "pint",
+        "lint:check": "pint --test",
+        "test": "phpunit"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
