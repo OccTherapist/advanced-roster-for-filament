@@ -31,6 +31,17 @@ trait HasDataSorting
         $this->dispatch('$refresh');
     }
 
+    public function resetFilters(): void
+    {
+        app(RosterPreferencesRepository::class)->resetFilters(
+            app(RosterScopeManager::class)->resolve(),
+        );
+
+        unset($this->assignees);
+
+        $this->dispatch('$refresh');
+    }
+
     private function applySortOrder(Collection $items, string $orderKey): Collection
     {
         $preferences = app(RosterPreferencesRepository::class)->get(

@@ -64,6 +64,14 @@ class RosterPreferencesRepository
         $this->overwrite($preferences, $scope, $userId);
     }
 
+    public function resetFilters(?RosterScope $scope = null, ?int $userId = null): void
+    {
+        $preferences = $this->get($scope, $userId);
+        unset($preferences['filters']);
+
+        $this->overwrite($preferences, $scope, $userId);
+    }
+
     public function overwrite(array $preferences, ?RosterScope $scope = null, ?int $userId = null): void
     {
         $scope ??= app(RosterScopeManager::class)->resolve();
@@ -94,6 +102,7 @@ class RosterPreferencesRepository
     {
         return [
             'assignee_order' => null,
+            'filters' => [],
             'layout' => 'relaxed',
             'text_size' => 'md',
         ];

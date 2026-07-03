@@ -5,31 +5,11 @@
 [![License](https://img.shields.io/github/license/OccTherapist/advanced-roster-for-filament?style=flat-square)](LICENSE)
 [![PHP Version](https://img.shields.io/packagist/php-v/occtherapist/advanced-roster-for-filament.svg?style=flat-square)](https://packagist.org/packages/occtherapist/advanced-roster-for-filament)
 
-**A flexible weekly roster page for Filament** — drag-and-drop entries, row reordering, recurring shifts, day notes, and optional PDF export.
+**A flexible weekly roster page for Filament** — drag-and-drop entries, filters & views, row reordering, recurring shifts, day notes, and optional PDF export.
 
 Built for **Filament v4 and v5** on **Laravel 11, 12, and 13**. Assign any Eloquent model as roster rows (default: `User`), scope data to your tenant or team, and extend validation rules when you need them.
 
----
-
-## Screenshots
-
-### Weekly overview
-
-Drag-and-drop entries across days and people, color-coded entry types, and optional day notes in the header row.
-
-![Weekly roster overview with work shifts, vacation, and sick leave entries](docs/images/roster-overview.png)
-
-### Create entries
-
-Entry types: work, sick, vacation, and unavailable — with optional recurrence.
-
-![Create entry modal with entry type, time range, and weekly recurrence](docs/images/entry-form-weekly.png)
-
-### Custom recurrence
-
-Daily, weekly, or custom patterns with weekday selection and repeat-until date.
-
-![Create entry modal with custom weekly recurrence and weekday selection](docs/images/entry-form-custom-recurrence.png)
+![Advanced Roster for Filament — weekly roster with drag & drop, filters, and shift planning](thumbnail_light.jpg)
 
 ---
 
@@ -40,6 +20,7 @@ Daily, weekly, or custom patterns with weekday selection and repeat-until date.
 | **Weekly roster** in a Filament panel | Ready-made `RosterPage` with calendar navigation |
 | **Any model as rows** | Configurable assignee model (default: `User`) |
 | **Drag & drop** entries and row order | Move, copy, and reorder — persisted per user and scope |
+| **Filters & views** | Filter visible rows by assignee; register custom filters for role, location, and more |
 | **Recurring entries** | Series with edit/delete for single or future occurrences |
 | **Day notes** | Optional colored notes per day (feature-flagged) |
 | **No hard-coded HR rules** | Overlap check built-in; custom rules via validator registry |
@@ -55,6 +36,7 @@ Daily, weekly, or custom patterns with weekday selection and repeat-until date.
 - **Configurable assignee model** — defaults to `User`, override via config or model methods
 - **Entry types** — work, sick, vacation, unavailable (or your own enum)
 - **Drag & drop** — move and copy entries between days and rows
+- **Filters & views** — built-in assignee filter; extensible `RosterFilter` contract
 - **Row reordering** — custom sort order per user and scope (not stored on the user model)
 - **Recurrence** — daily, weekly, monthly, and custom weekday patterns
 - **Day notes** — optional per-day notes with recurrence (`roster.features.notes`)
@@ -133,11 +115,18 @@ return [
     'validate_overlap' => true,
 
     'week_starts_at' => 'monday',
-    'visible_days' => 5,
+    'week_days' => 5,
+
+    'filters' => [
+        \OccTherapist\AdvancedRosterForFilament\Support\Filters\AssigneeRosterFilter::class,
+        // \App\Roster\Filters\RoleRosterFilter::class,
+        // \App\Roster\Filters\LocationRosterFilter::class,
+    ],
 
     'features' => [
         'notes' => true,
         'print' => true,
+        'filters' => true,
     ],
 ];
 ```
@@ -166,6 +155,59 @@ interface RosterEntryTypeContract
 }
 ```
 
+### Filters & views
+
+The roster toolbar includes a filter button (funnel icon). Active filters are combined with **AND** logic. An empty selection means “no restriction” — all assignees stay visible.
+
+The built-in `AssigneeRosterFilter` lets users pick which people appear in the grid. Filter values are stored per user and scope in `roster_user_preferences`.
+
+Register additional filters by implementing `RosterFilter`:
+
+```php
+use Filament\Forms\Components\Select;
+use Illuminate\Support\Collection;
+use OccTherapist\AdvancedRosterForFilament\Contracts\RosterFilter;
+use OccTherapist\AdvancedRosterForFilament\Contracts\RosterScope;
+
+class RoleRosterFilter implements RosterFilter
+{
+    public function getKey(): string
+    {
+        return 'role';
+    }
+
+    public function getLabel(): string
+    {
+        return __('Role');
+    }
+
+    public function getFormComponent(): Select
+    {
+        return Select::make($this->getKey())
+            ->label($this->getLabel())
+            ->options([
+                'nurse' => 'Nurse',
+                'doctor' => 'Doctor',
+                'admin' => 'Admin',
+            ])
+            ->multiple();
+    }
+
+    public function apply(Collection $assignees, mixed $value, ?RosterScope $scope): Collection
+    {
+        if (! is_array($value) || $value === []) {
+            return $assignees;
+        }
+
+        return $assignees->filter(
+            fn ($assignee) => in_array($assignee->role, $value, true),
+        );
+    }
+}
+```
+
+Add your filter class to the `filters` array in config. Disable the entire feature with `'features.filters' => false`.
+
 ### Extension points
 
 | Contract | Purpose |
@@ -173,6 +215,7 @@ interface RosterEntryTypeContract
 | `RosterScopeResolver` | Resolve `scope_id` / `scope_type` (Filament tenant by default) |
 | `RosterSection` | Register additional roster sections (v1 ships one default section) |
 | `RosterEntryValidator` | Add create/update/move/copy validation rules |
+| `RosterFilter` | Add roster view filters (role, location, team, etc.) |
 
 ---
 
@@ -188,6 +231,7 @@ The package does **not** ship permissions or policies. Restrict access in your h
 |---------|-------|
 | **v0.1.0** | Core roster page, entries, drag & drop, row order, recurrence |
 | **v0.2.0** | Day notes, PDF / print fallback |
+| **v0.3.0** | Filters & views with extensible filter registry |
 | **v1.0** | Stable API, test coverage, Filament plugin listing |
 
 ---

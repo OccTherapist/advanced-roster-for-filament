@@ -23,6 +23,7 @@
         </div>
         <div class="flex items-center gap-2">
             {{ $this->printAction() }}
+            {{ $this->filtersAction() }}
             <x-filament::button wire:click="previousDay" key-bindings="arrowleft" color="gray" icon="heroicon-m-chevron-left" />
             <x-filament::button wire:click="today" key-bindings="t" color="gray">
                 {{ __('advanced-roster-for-filament::actions.today') }}

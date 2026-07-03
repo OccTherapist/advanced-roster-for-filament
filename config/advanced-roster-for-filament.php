@@ -3,6 +3,7 @@
 use App\Models\User;
 use OccTherapist\AdvancedRosterForFilament\Enums\RosterEntryType;
 use OccTherapist\AdvancedRosterForFilament\Support\FilamentRosterScopeResolver;
+use OccTherapist\AdvancedRosterForFilament\Support\Filters\AssigneeRosterFilter;
 use OccTherapist\AdvancedRosterForFilament\Support\Validators\OverlapRosterEntryValidator;
 
 return [
@@ -82,6 +83,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Roster filters
+    |--------------------------------------------------------------------------
+    |
+    | Register RosterFilter implementations. The built-in assignee filter lets
+    | users choose which rows are visible. Add custom filters for role,
+    | location, or other criteria in your app.
+    |
+    */
+
+    'filters' => [
+        AssigneeRosterFilter::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Overlap validation
     |--------------------------------------------------------------------------
     */
@@ -119,6 +135,7 @@ return [
     'features' => [
         'notes' => true,
         'print' => true,
+        'filters' => true,
     ],
 
     /*

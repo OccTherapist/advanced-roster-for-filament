@@ -2,6 +2,19 @@
 
 All notable changes to `advanced-roster-for-filament` will be documented in this file.
 
+## v0.3.0 - 2026-07-04
+
+### Added
+
+- Extensible `RosterFilter` contract with filter registry
+- Built-in assignee filter (toolbar funnel icon, modal, per-user persistence)
+- Feature flag `features.filters` (default: enabled)
+- Filter reset action and active-filter badge on the roster toolbar
+
+### Changed
+
+- README updated with marketing thumbnail and filter documentation
+
 ## v0.1.1 - 2026-06-22
 
 ### Changed

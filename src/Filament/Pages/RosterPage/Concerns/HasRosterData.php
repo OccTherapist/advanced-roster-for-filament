@@ -7,6 +7,7 @@ use Livewire\Attributes\Computed;
 use OccTherapist\AdvancedRosterForFilament\Models\RosterEntry;
 use OccTherapist\AdvancedRosterForFilament\Models\RosterNote;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterAssigneeResolver;
+use OccTherapist\AdvancedRosterForFilament\Support\RosterFilterRegistry;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterScopeManager;
 
 trait HasRosterData
@@ -19,10 +20,14 @@ trait HasRosterData
     #[Computed]
     public function assignees(): Collection
     {
-        $assignees = app(RosterAssigneeResolver::class)
-            ->getAssignees($this->sectionKey(), app(RosterScopeManager::class)->resolve());
+        $scope = app(RosterScopeManager::class)->resolve();
 
-        return $this->applySortOrder($assignees, 'assignee_order');
+        $assignees = app(RosterAssigneeResolver::class)
+            ->getAssignees($this->sectionKey(), $scope);
+
+        $assignees = $this->applySortOrder($assignees, 'assignee_order');
+
+        return app(RosterFilterRegistry::class)->apply($assignees, $scope);
     }
 
     #[Computed]

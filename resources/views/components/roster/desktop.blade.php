@@ -62,6 +62,7 @@
         </div>
         <div class="flex items-center gap-2">
             {{ $this->printAction() }}
+            {{ $this->filtersAction() }}
             <x-filament::button
                 wire:click="previousWeek"
                 :tooltip="__('advanced-roster-for-filament::tooltips.previous_week')"

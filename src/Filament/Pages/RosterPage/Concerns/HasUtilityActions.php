@@ -14,6 +14,7 @@ use Filament\Support\Icons\Heroicon;
 use OccTherapist\AdvancedRosterForFilament\Models\RosterEntry;
 use OccTherapist\AdvancedRosterForFilament\Models\RosterNote;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterAssigneeResolver;
+use OccTherapist\AdvancedRosterForFilament\Support\RosterFilterRegistry;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterPreferencesRepository;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterScopeManager;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -35,6 +36,65 @@ trait HasUtilityActions
             ->modalContent(view('advanced-roster-for-filament::pages.info-modal'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false);
+    }
+
+    public function filtersAction(): Action
+    {
+        return Action::make('filters')
+            ->label(__('advanced-roster-for-filament::actions.filters'))
+            ->hiddenLabel()
+            ->icon(Heroicon::Funnel)
+            ->color('gray')
+            ->tooltip(__('advanced-roster-for-filament::actions.filters'))
+            ->keyBindings('alt+f')
+            ->modalHeading(__('advanced-roster-for-filament::messages.filters_heading'))
+            ->modalSubmitActionLabel(__('advanced-roster-for-filament::actions.apply_filters'))
+            ->modalWidth(Width::ExtraLarge)
+            ->badge(fn () => $this->activeFilterCount() ?: null)
+            ->hidden(fn () => ! config('advanced-roster-for-filament.features.filters', true)
+                || ! app(RosterFilterRegistry::class)->hasFilters())
+            ->fillForm(fn () => app(RosterPreferencesRepository::class)->get(
+                app(RosterScopeManager::class)->resolve(),
+            )['filters'] ?? [])
+            ->schema([
+                ...app(RosterFilterRegistry::class)->formComponents(),
+
+                Fieldset::make(__('advanced-roster-for-filament::actions.reset_filters'))
+                    ->schema([
+                        Action::make('resetFilters')
+                            ->label(__('advanced-roster-for-filament::actions.reset_filters'))
+                            ->color('danger')
+                            ->link()
+                            ->icon(Heroicon::ArrowPath)
+                            ->action(fn () => $this->resetFilters())
+                            ->requiresConfirmation()
+                            ->slideOver(false)
+                            ->modalHeading(__('advanced-roster-for-filament::messages.reset_filters_heading'))
+                            ->modalDescription(__('advanced-roster-for-filament::messages.reset_filters_description'))
+                            ->modalSubmitActionLabel(__('advanced-roster-for-filament::messages.reset_filters_submit')),
+                    ])
+                    ->extraAttributes(['class' => 'border border-danger-500 p-4 rounded-lg flex justify-start']),
+            ])
+            ->action(function (array $data) {
+                app(RosterPreferencesRepository::class)->save(
+                    ['filters' => $data],
+                    app(RosterScopeManager::class)->resolve(),
+                );
+
+                unset($this->assignees);
+
+                Notification::make()
+                    ->title(__('advanced-roster-for-filament::messages.filters_saved'))
+                    ->success()
+                    ->send();
+            });
+    }
+
+    public function activeFilterCount(): int
+    {
+        return app(RosterFilterRegistry::class)->countActive(
+            app(RosterScopeManager::class)->resolve(),
+        );
     }
 
     public function settingsAction(): Action

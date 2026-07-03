@@ -15,6 +15,7 @@ use OccTherapist\AdvancedRosterForFilament\Livewire\RosterNoteRepetitionDetails;
 use OccTherapist\AdvancedRosterForFilament\Support\ConfigRosterSection;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterAssigneeResolver;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterEntryTypeResolver;
+use OccTherapist\AdvancedRosterForFilament\Support\RosterFilterRegistry;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterPreferencesRepository;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterScopeManager;
 use OccTherapist\AdvancedRosterForFilament\Support\RosterSectionRegistry;
@@ -29,6 +30,7 @@ class AdvancedRosterForFilamentServiceProvider extends ServiceProvider
         $this->app->singleton(RosterSectionRegistry::class);
         $this->app->singleton(RosterEntryTypeResolver::class);
         $this->app->singleton(RosterValidatorRegistry::class);
+        $this->app->singleton(RosterFilterRegistry::class);
         $this->app->singleton(RosterPreferencesRepository::class);
         $this->app->singleton(RosterAssigneeResolver::class);
 
