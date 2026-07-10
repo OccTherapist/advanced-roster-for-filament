@@ -9,7 +9,7 @@
 
 Built for **Filament v4 and v5** on **Laravel 11, 12, and 13**. Assign any Eloquent model as roster rows (default: `User`), scope data to your tenant or team, and extend validation rules when you need them.
 
-![Advanced Roster for Filament — weekly roster with drag & drop, filters, and shift planning](thumbnail_light.jpg)
+<img src="thumbnail_light.jpg" alt="Advanced Roster for Filament — weekly roster with drag & drop, filters, and shift planning" class="filament-hidden">
 
 ---
 
